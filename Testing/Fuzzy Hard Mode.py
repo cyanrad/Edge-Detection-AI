@@ -9,6 +9,7 @@ x_serv = np.arange(0, 11, 1)    # input
 x_tip = np.arange(0, 26, 1)     # output
 
 # Generating mfs
+
 qual_lo = fuzz.trimf(x_qual, [0, 0, 5])     # quality
 qual_md = fuzz.trimf(x_qual, [0, 5, 10])    # quality
 qual_hi = fuzz.trimf(x_qual, [5, 10, 10])   # quality
