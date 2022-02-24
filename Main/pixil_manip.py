@@ -1,3 +1,5 @@
+import numpy as np
+
 """
 * FILENAME: pixil_manip.py
 * DESCRIPTION:
@@ -34,3 +36,11 @@ def get_dPj_matrix(Pj_matrix):
             return_mat[i, j] = abs(P - return_mat[i, j])
     return_mat[1, 1] = P    # reassigning P
     return return_mat
+
+
+def apply_fuzzy_contrast(contrast_simulation, dPj_matrix):
+    # getting dPj pixels
+    bits = dPj_matrix.flatten()  # flattening the matrix
+    bits = np.delete(bits, 4)    # deleting the 5th element(P)
+    for i in range(8):
+        contrast_simulation.input['contrast' + str(i)] = bits[0, i]

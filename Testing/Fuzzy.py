@@ -50,6 +50,7 @@ rating9 = ctrl.Rule(service['good'] & quality['good'], rating['5 star'])
 tipping_ctrl = ctrl.ControlSystem([rule1, rule2, rule3,
                                    rating1, rating2, rating3, rating4, rating5,
                                    rating6, rating7, rating8, rating9])
+
 # used for getting the final results of a system
 tipping = ctrl.ControlSystemSimulation(tipping_ctrl)
 
