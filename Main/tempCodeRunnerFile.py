@@ -1,1 +1,1 @@
-p
+COLOR_BGR2GRAY

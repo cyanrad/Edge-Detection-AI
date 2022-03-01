@@ -44,3 +44,5 @@ def apply_fuzzy_contrast(contrast_simulation, dPj_matrix):
     bits = np.delete(bits, 4)    # deleting the 5th element(P)
     for i in range(8):
         contrast_simulation.input['contrast' + str(i)] = bits[0, i]
+
+

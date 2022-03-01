@@ -9,9 +9,11 @@ import matplotlib.pyplot as plt         # Displaying the plots
 # for a single pixil value
 def create_bit_fuzzy_set(id):
     uod_contrast = ctrl.Antecedent(np.arange(0, 256, 1), 'contrast'+id)
-    uod_contrast["lower"] = fuzz.trapmf(uod_contrast.universe, [0, 0, 25, 75])
+    uod_contrast["lower"] = fuzz.trapmf(
+        uod_contrast.universe, [5, 5, 150, 200])  # [0, 0, 25, 75]
     uod_contrast["higher"] = fuzz.trapmf(
-        uod_contrast.universe, [25, 75, 255, 255])
+        # uod_contrast.universe, [25, 75, 255, 255]) #original
+        uod_contrast.universe, [200, 255, 255, 255])  # me fucking around
     return uod_contrast
 
 
@@ -29,7 +31,7 @@ def create_matrixOf_bit_fuzzy_set():
     return return_set_mat
 
 
-def create_rule_base(set_array, output_set):
+def create_control_sim(set_array, output_set):
     bit_control = ctrl.ControlSystem()
 
     # generating edge rules
@@ -48,3 +50,15 @@ def create_rule_base(set_array, output_set):
     # generating non-edge rules
 
     return ctrl.ControlSystemSimulation(bit_control)
+
+
+def isEdge(simulation):
+    # pipe bomb code
+    # god i wish i were a duck
+    try:
+        # if error then non-edge
+        simulation.compute()
+        # print(simulation.output["edge"])
+        return True
+    except ValueError:
+        return False
