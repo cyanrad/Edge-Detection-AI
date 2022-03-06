@@ -1,0 +1,18 @@
+>> Usage
+simply run the main.py file, either through an IDE, text editor, or cmd
+
+>> to change the image:
+find the following line
+img = cv.imread("images/pepper.bmp")
+and change "images/pepper.bmp" to the name of your image
+it is advised to place your image in the images folder.
+
+
+>> about contrast adjustment
+the Edge_Fuzzy.py file includes functions that were not 
+demonstrated in the report due to them being functional but
+unclomplete yet.
+these functions inlcude: 
+- _create_intensity_fuzzy_set()
+- _create_output_intensity_fuzzy_set()
+- create_intensity_sim()

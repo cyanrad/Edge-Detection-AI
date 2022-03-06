@@ -1,13 +1,26 @@
-import Edge_Fuzzy as ef     # the fuzzy logic library
-import pixil_manip as pm    # pixel manipulation library
-import numpy as np          # for the matrix
-import matplotlib.pyplot as plt         # Displaying the plots
-import cv2 as cv
+import Edge_Fuzzy as ef     # (custom) the fuzzy logic library
+import pixil_manip as pm    # (custom) pixel manipulation library
+import numpy as np          # for the matrix, and arrays
+import cv2 as cv            # img reading and resizing
+# import timeit              # benchmarking
+# import matplotlib.pyplot as plt         # Displaying the plots
 
 
-def doMatrixOperation(img, simulation):
+def apply_contrast(img):
+    return_img = img
+    intensity_sim = ef.create_intensity_sim()
+    for i in range(img.shape[0]):
+        print(i)
+        for j in range(img.shape[1]):
+            intensity_sim.input["intensity"] = return_img[i, j]
+            intensity_sim.compute()
+            return_img[i, j] = intensity_sim.output['output']
+            #print(return_img[i, j])
+    return return_img
+
+
+def detect_edges(img, simulation):
     returnImg = np.zeros((img.shape[0], img.shape[1], 3), np.uint8)
-    img
     for i in range(1, img.shape[0]-1):
         print(i)
         for j in range(1, img.shape[1]-1):
@@ -24,36 +37,35 @@ def doMatrixOperation(img, simulation):
     return returnImg
 
 
-img = cv.imread("testing2.jpg")
-cv.imshow("Testing", img)
-cv.waitKey(0)
+# for simplicity
+def show_and_wait(img, window="Testing"):
+    cv.imshow(window, img)
+    cv.waitKey(0)
 
 
+# reading the image and displaying it
+img = cv.imread("images/pepper.bmp")
+original_shape = img.shape[0:2]  # holding the orignal shape for later
+show_and_wait(img)
+
+# converting the image to grayscale, displaying, and compressing it.
 img_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-i = 1
-j = 1
-print()
-cv.imshow("Testing", img_gray)
+show_and_wait(img_gray)
+#img_gray = pm.scale_down(img_gray, 200)
 
-cv.waitKey(0)
+# >> uncomplete feature, usable but not practical
+# img_gray = apply_contrast(img_gray)
+# show_and_wait(img_gray)
 
+
+# creating surrounding bits matrix, edge mf, and the control simulation
 bit_fs_array = ef.create_matrixOf_bit_fuzzy_set()
 edge_fs = ef.create_edge_fuzzy_set()
 control_sim = ef.create_control_sim(bit_fs_array, edge_fs)
 
-test = doMatrixOperation(img_gray, control_sim)
-cv.imshow("Testing", test)
-cv.waitKey(0)
+# doing the edge detection, and scaling the image back to original size
+edge = detect_edges(img_gray, control_sim)
+edge = pm.scale_up(edge, original_shape)
+show_and_wait(edge)
 
-
-#testing_mat = np.matrix([[197, 197, 197], [199, 199, 198], [197, 197, 199]])
-#testing_mat_dPj = pm.get_dPj_matrix(testing_mat)
-
-#pm.apply_fuzzy_contrast(control_sim, testing_mat_dPj)
-# print(ef.isEdge(control_sim))
-
-
-plt.show()
-
-# waiting for key press for window deletion
 cv.destroyAllWindows()

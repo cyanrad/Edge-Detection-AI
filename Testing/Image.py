@@ -1,7 +1,7 @@
 import cv2 as cv
 
 # getting & showing image
-img = cv.imread('141.JPG')
+img = cv.imread('pepper.bmp')
 cv.imshow("Testing", img)
 cv.waitKey(0)
 

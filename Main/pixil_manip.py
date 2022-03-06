@@ -1,4 +1,5 @@
 import numpy as np
+import cv2 as cv
 
 """
 * FILENAME: pixil_manip.py
@@ -37,6 +38,8 @@ def get_dPj_matrix(Pj_matrix):
     return_mat[1, 1] = P    # reassigning P
     return return_mat
 
+# > sending the contrast to the simulation
+
 
 def apply_fuzzy_contrast(contrast_simulation, dPj_matrix):
     # getting dPj pixels
@@ -46,3 +49,31 @@ def apply_fuzzy_contrast(contrast_simulation, dPj_matrix):
         contrast_simulation.input['contrast' + str(i)] = bits[0, i]
 
 
+def scale_down(img, max_height=200):
+    # max_height is also the new width For simplicity
+    # the desired size is 200 rows (height)
+
+    # the resize ratio, what % we will resize the image
+    resize_ratio = max_height/img.shape[0]
+    if (resize_ratio >= 1):  # if smaller then don't resize
+        return img
+
+    new_width = int(img.shape[1] * resize_ratio)
+
+    # doing the resizing
+    # in short interpolation is a method for estimating the unkown values between two points
+    # ...it much more complex than that though
+    # using bilinear interpolation, which is linear interpolation but for two variables (x,y)
+    img = cv.resize(img, [new_width, max_height], interpolation=cv.INTER_AREA)
+    return img
+
+
+def scale_up(img, original_shape):
+    # if scale down is not applied -> do nothing
+    if(img.shape[0] == original_shape[0] and
+            img.shape[1] == original_shape[1]):
+        return img
+
+    # else scale image back to original size
+    img = cv.resize(img, original_shape, interpolation=cv.INTER_AREA)
+    return img
