@@ -14,7 +14,7 @@ def create_bit_fuzzy_set(id):
     uod_contrast["higher"] = fuzz.trapmf(       # creating and inserting the "Higher" set
         uod_contrast.universe, [30, 75, 255, 255])
     return uod_contrast
-    # note that [5,5,150,200] and [200,255,255,255] can be used for more complex images
+    # note that [10, 10, 75, 200] and [30, 75, 255, 255] can be used for more complex images
     # like the pepper image provided, or a face.
     # original: [5,5,25,75] and [25,75,255,255]
 
