@@ -66,7 +66,7 @@ show_and_wait(img)
 # converting the image to grayscale, displaying, and compressing it.
 img_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 show_and_wait(img_gray)
-#img_gray = pm.scale_down(img_gray, 640)
+img_gray = pm.scale_down(img_gray, 640)
 
 # >> uncomplete feature, usable but not practical
 img_gray = apply_contrast(img_gray)

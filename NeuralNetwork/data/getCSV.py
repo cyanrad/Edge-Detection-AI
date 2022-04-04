@@ -27,12 +27,14 @@ import csv
 # isEdge: a 1 or 0 value indicating if its an edge
 def getReturnArray(edgeI, originalI, x, y):
     returnArr = []
+    centerVal = originalI[x+1, y+1]
 
     # >> getting pixels from orignal image
     for i in range(x, x+3):
         for j in range(y, y+3):
-            returnArr.append(originalI[i, j])
-    # returnArr.pop(4)  # deleting the center element cuz fuck it
+            # appending contrast
+            returnArr.append(abs(centerVal-originalI[i, j]))
+    # deleting the center element cuz we don't need it (always 0)
     returnArr.pop(4)
 
     # >> getting edge at <x,y> of edgeI
@@ -43,6 +45,8 @@ def getReturnArray(edgeI, originalI, x, y):
 
     return returnArr
 
+# >> to display the image
+
 
 def show_and_wait(img, window="Testing"):
     cv.imshow(window, img)
@@ -50,30 +54,45 @@ def show_and_wait(img, window="Testing"):
 
 
 def main():
-
-    # we get the image name from the cli args
+    # >> Getting images file location
+    # the Original image
     if (len(sys.argv) <= 1):
-        print("ERROR: edge image file arg not specified")
-        sys.exit(2)
-
-    if (len(sys.argv) <= 2):
         print("ERROR: original image file arg not specified")
         sys.exit(2)
 
-    # CSV file init
-    f = open('data.csv', 'w', encoding="UTF8", newline="")
+    # the Edge image
+    if (len(sys.argv) <= 2):
+        print("ERROR: edge image file arg not specified")
+        sys.exit(2)
+
+    # >> CSV file & writer init
+    f = open('testing.csv', 'w', encoding="UTF8", newline="")
     writer = csv.writer(f)
 
+    # >> reading the images
     edgeImage = cv.imread(sys.argv[2], cv.IMREAD_GRAYSCALE)
     originalImage = cv.imread(sys.argv[1], cv.IMREAD_GRAYSCALE)
     show_and_wait(edgeImage)
     show_and_wait(originalImage)
 
+    # >> looping over image and writing data
+    count1 = 0  # the number for edges the system detected
     for i in range(0, edgeImage.shape[0]):
-        print(i)
+        print(i)    # as a counter for progress
         for j in range(0, edgeImage.shape[1]):
+            # getting the data for index i=y,j=x
             returnList = getReturnArray(edgeImage, originalImage, i, j)
-            writer.writerow(returnList)
+
+            # for each edge we write a non-edge so they are balanced
+            # if the number of non-edge is significantly greater then data is useless
+            if (returnList[8] == 0):    # non-edge
+                if (count1 > 0):
+                    writer.writerow(returnList)
+                    count1 = count1-1
+            elif(returnList[8] == 1):   # edge
+                writer.writerow(returnList)
+                count1 = count1+1
+
     f.close()
 
 
