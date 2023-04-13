@@ -16,8 +16,8 @@ import csv
 # ARGUMENTS:
 # edgeI:     image that is already edge detected
 # originalI: image with the contrast pixels (grayscale)
-# x(col): pixel x posiiton (in the edgeI img)
-# y(row): pixel y position (in the egdeI img)
+# x(col): pixel x position (in the edgeI img)
+# y(row): pixel y position (in the edgeI img)
 #
 # RETURNS:
 # returnArr: np.array
@@ -26,28 +26,27 @@ import csv
 #                            pixels of the x,y center)
 # isEdge: a 1 or 0 value indicating if its an edge
 def getReturnArray(edgeI, originalI, x, y):
-    returnArr = []
-    centerVal = originalI[x+1, y+1]
+    returnArr = []                   # the array we will return
+    centerVal = originalI[x+1, y+1]  # temporarly holding the center pixel
 
     # >> getting pixels from orignal image
     for i in range(x, x+3):
         for j in range(y, y+3):
-            # appending contrast
-            returnArr.append(abs(centerVal-originalI[i, j]))
+            # getting the contrast from pixel<i,j>
+            returnArr.append(abs(centerVal-originalI[i, j])/255)
     # deleting the center element cuz we don't need it (always 0)
     returnArr.pop(4)
 
     # >> getting edge at <x,y> of edgeI
-    if (edgeI[y, x] > 200):  # edge values are 255, but using 200 for error
+    if (edgeI[x, y] > 200):  # edge values are 255, but using 200 for error
         returnArr.append(1)
     else:
         returnArr.append(0)
 
     return returnArr
 
+
 # >> to display the image
-
-
 def show_and_wait(img, window="Testing"):
     cv.imshow(window, img)
     cv.waitKey(0)
@@ -66,7 +65,7 @@ def main():
         sys.exit(2)
 
     # >> CSV file & writer init
-    f = open('testing.csv', 'w', encoding="UTF8", newline="")
+    f = open('hand_written_norm.csv', 'w', encoding="UTF8", newline="")
     writer = csv.writer(f)
 
     # >> reading the images
@@ -86,14 +85,15 @@ def main():
             # for each edge we write a non-edge so they are balanced
             # if the number of non-edge is significantly greater then data is useless
             if (returnList[8] == 0):    # non-edge
-                if (count1 > 0):
+                # this is for the sake of keeping the data 50/50 in edge to non-e ratio
+                if (count1 > 0):        # if edge count is 0, we don't write a non-edge
                     writer.writerow(returnList)
                     count1 = count1-1
             elif(returnList[8] == 1):   # edge
                 writer.writerow(returnList)
                 count1 = count1+1
 
-    f.close()
+    f.close()  # closing the CSV file
 
 
 main()

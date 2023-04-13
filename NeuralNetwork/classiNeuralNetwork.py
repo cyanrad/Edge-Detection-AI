@@ -21,30 +21,27 @@ def build_and_compile_model(norm, out):
     # creating the densly connected deep conv neural network
     model = keras.Sequential([
         norm,
-        layers.Dense(64, activation='elu'),
-        layers.Dense(64, activation='elu'),
-        layers.Dense(32, activation='elu'),
+        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(10),
         out
     ])
 
     # compiling the model
-    model.compile(loss='mean_absolute_error',
-                  optimizer=tf.keras.optimizers.Adam(0.001))
+    model.compile(optimizer='adam',
+                  loss=tf.keras.losses.SparseCategoricalCrossentropy(
+                      from_logits=True),
+                  metrics=['accuracy'])
     return model
 
 
 # Make NumPy printouts easier to read.
 np.set_printoptions(precision=3, suppress=True)
 
-n = 44836  # number of records in file
-s = 4000  # desired sample size
+
 column_names = ['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'edge']
-# used for getting random data from the set
-# use this when we don't want the entire data set
-skip = sorted(random.sample(range(n), n-s))
 
 # skiprows=skip to use skip
-raw_dataset = pd.read_csv('testing.csv', names=column_names, skiprows=skip)
+raw_dataset = pd.read_csv('testing.csv', names=column_names)
 dataset = raw_dataset.copy()
 
 train_dataset = dataset.sample(frac=0.8, random_state=0)
@@ -70,8 +67,9 @@ history = p_model.fit(
     epochs=10000,   # epoch count
     verbose=2,      # Log Progress
     # Calculate validation results on 20% of the training data.
-    validation_split=0.4)
+    validation_split=0.2,
+    batch_size=200)
 
 
 # >> saving the model
-p_model.save('dnn_model_32_con')
+p_model.save('dnn_model_classi')
